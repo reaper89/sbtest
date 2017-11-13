@@ -62,7 +62,7 @@ class ShoesController extends ApiController
         $shoe = Shoe::find($id);
 
         if(!$shoe){
-            return $this->respondNotFound('Shoe does not exist!');
+            return $this->respondNotFound('Shoe not found.');
         }
 
         return $this->respond(['data' => $this->shoeTransformer->transform($shoe)]);
@@ -80,7 +80,18 @@ class ShoesController extends ApiController
 
         Shoe::create($request->all());
 
-        return $this->respond(['data' => ['message' => 'Shoe added!']]);
+        return $this->respond(['data' => ['message' => 'Shoe added.']]);
+    }
+
+    public function destroy($id)
+    {
+        $shoe = Shoe::find($id);
+
+        if(!$shoe){
+            return $this->respondNotFound('Shoe not found!');
+        }
+        $shoe->delete();
+        return $this->respond(['data' => ['message' => 'Shoe removed.']]);
     }
 
 
