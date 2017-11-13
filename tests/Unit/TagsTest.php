@@ -26,7 +26,7 @@ class TagsTest extends TestCase
         $cont = json_decode($result->getContent());
 
         $this->assertObjectHasAttribute('data', $cont);
-        $this->assertObjectHasAttribute('Name', $cont->data);
+        $this->assertObjectHasAttribute('tag_name', $cont->data);
     }
 
     public function test_its_returns_a_404_not_found_message_when_a_tag_is_not_found()

@@ -103,9 +103,39 @@ class ShoesTest extends TestCase
         $result = $this->postJson('/api/v1/shoes', $shoe);
         $cont = json_decode($result->getContent());
 
-        $this->assertEquals('Shoe added!', $cont->data->message);
+        $this->assertEquals('Shoe added.', $cont->data->message);
         $shoe = Shoe::where('brand', 'Nike')->get();
         $this->assertEquals(1, count($shoe));
+    }
+
+    public function test_it_removes_a_shoe_by_id()
+    {
+        $this->actAsApiUser();
+        Shoe::create([
+            'brand' => 'Adidas',
+            'model' => 'P90',
+            'size' => 42,
+            'price' => 145
+        ]);
+
+        $shoe = Shoe::where('model', 'P90')->first();
+        $this->assertEquals(1, count($shoe));
+
+        $this->deleteJson('api/v1/shoes/'.$shoe->id);
+
+        $shoe = Shoe::where('brand', 'Adidas')->get();
+        $this->assertEquals(0, count($shoe));
+
+    }
+
+    public function test_it_returns_a_404_error_when_wrong_id_is_given_to_delete()
+    {
+        $this->actAsApiUser();
+
+        $result = $this->deleteJson('api/v1/shoes/999999999999999999');
+        $cont = json_decode($result->getContent());
+
+        $this->assertEquals(404, $cont->error->status_code);
     }
 
     public function actAsApiUser()
